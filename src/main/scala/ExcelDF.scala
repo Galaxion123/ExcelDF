@@ -28,7 +28,7 @@ object ExcelDF {
       .load("C:/Users/an_ma/Programming/Spark/17.05.21.xls")
     val dffin = df3.union(df4)
     dffin.show(300)
-    val dffil = dffin.filter(col("Статус") =!= "cancelled_by_guest")
+    val dffil = dffin.filter(col("Статус") =!= "cancelled_by_guest") //only show bookings not cancelled
     val dfrnm = dffil.withColumnRenamed("Номер бронирования", "Booking")
       .withColumnRenamed("Кто забронировал", "Who_reserved")
       .withColumnRenamed("Имя гостя", "Guest_name")
@@ -56,13 +56,13 @@ object ExcelDF {
       .withColumnRenamed("Способ оплаты", "Payment_method")
       .withColumnRenamed("Комментарии", "Comments")
       .withColumnRenamed("Группа", "Group")
-      .where("Price <= 10000")
+      .where("Price <= 10000") //only bookings with a price over 10000 RUB
     dfrnm.printSchema()
     dfrnm.show(50)
     dfrnm.write.format("com.crealytics.spark.excel")
       .option("header", "true")
-      .save("C:/Users/an_ma/Programming/Spark/15-18.xls")
-    val jsonDF = dfrnm.toJSON
+      .save("C:/Users/an_ma/Programming/Spark/15-18.xls") //output in an excel file
+    val jsonDF = dfrnm.toJSON //conversion to a valid (readable by excel) JSON format
     val count = jsonDF.count()
     jsonDF.repartition(1)
       .rdd
