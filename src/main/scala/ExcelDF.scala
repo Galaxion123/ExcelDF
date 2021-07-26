@@ -29,7 +29,7 @@ object ExcelDF {
     val dffin = df3.union(df4)
     dffin.show(300)
     val dffil = dffin.filter(col("Статус") =!= "cancelled_by_guest") //only show bookings not cancelled
-    val dfrnm = dffil.withColumnRenamed("Номер бронирования", "Booking")
+    val dfrnm = dffil.withColumnRenamed("Номер бронирования", "Booking") //renaming columns
       .withColumnRenamed("Кто забронировал", "Who_reserved")
       .withColumnRenamed("Имя гостя", "Guest_name")
       .withColumnRenamed("Заезд", "Arrival")
@@ -42,7 +42,7 @@ object ExcelDF {
       .withColumnRenamed("Дети", "Children")
       .withColumnRenamed("Возраст детей", "Children_age")
       .withColumnRenamed("Цена", "Price")
-      .withColumn("Price", trim(col("Price"), " RUB"))
+      .withColumn("Price", trim(col("Price"), " RUB")) //changing some columns type and format
       .withColumn("Price", col("Price").cast(FloatType))
       .withColumn("Price", round(col("Price"), 2))
       .withColumnRenamed("Комиссия, %", "Commission_%")
@@ -56,7 +56,7 @@ object ExcelDF {
       .withColumnRenamed("Способ оплаты", "Payment_method")
       .withColumnRenamed("Комментарии", "Comments")
       .withColumnRenamed("Группа", "Group")
-      .where("Price <= 10000") //only bookings with a price over 10000 RUB
+      .where("Price >= 10000") //only bookings with a price over or equal to 10000 RUB
     dfrnm.printSchema()
     dfrnm.show(50)
     dfrnm.write.format("com.crealytics.spark.excel")
